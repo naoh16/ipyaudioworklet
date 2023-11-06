@@ -11,7 +11,7 @@ import * as widgetExports from './widget';
 
 import { MODULE_NAME, MODULE_VERSION } from './version';
 
-const EXTENSION_ID = 'ipyaudioworklet:plugin';
+const EXTENSION_ID = '@naoh16/ipyaudioworklet:plugin';
 
 /**
  * The example plugin.

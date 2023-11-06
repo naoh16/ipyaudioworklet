@@ -1,5 +1,5 @@
 {
-  "name": "ipyaudioworklet",
+  "name": "@naoh16/ipyaudioworklet",
   "version": "0.1.0",
   "description": "A Jupyter Widget for Web Audio Recording using Audio Worklet",
   "keywords": [

@@ -21,7 +21,7 @@ def _jupyter_labextension_paths():
     """
     return [{
         'src': 'labextension',
-        'dest': 'ipyaudioworklet',
+        'dest': '@naoh16/ipyaudioworklet',
     }]
 
 

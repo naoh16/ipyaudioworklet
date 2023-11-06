@@ -8,7 +8,7 @@ import { createTestModel } from './utils';
 
 import { AudioRecorderModel } from '..';
 
-describe('AudioRecorder', () => {
+describe('@naoh16/AudioRecorder', () => {
   describe('AudioRecorderModel', () => {
     it('should be createable', () => {
       const model = createTestModel(AudioRecorderModel);

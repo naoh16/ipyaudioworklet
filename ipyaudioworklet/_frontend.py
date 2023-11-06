@@ -8,5 +8,5 @@
 Information about the frontend package of the widgets.
 """
 
-module_name = "ipyaudioworklet"
+module_name = "@naoh16/ipyaudioworklet"
 module_version = "^0.1.0"

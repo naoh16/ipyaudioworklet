@@ -6,7 +6,7 @@ define(function() {
     window['requirejs'].config({
         map: {
             '*': {
-                'ipyaudioworklet': 'nbextensions/ipyaudioworklet/index',
+                '@naoh16/ipyaudioworklet': 'nbextensions/ipyaudioworklet/index',
             },
         }
     });
