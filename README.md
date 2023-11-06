@@ -5,14 +5,19 @@
 [![codecov](https://codecov.io/gh/myorg/ipyaudioworklet/branch/master/graph/badge.svg)](https://codecov.io/gh/myorg/ipyaudioworklet)
 
 
-A Custom Jupyter Widget Library
+A Jupyter Widget for Web Audio Recording using Audio Worklet
+
+!!This is WiP project!!
+
+This extension will be enable us to record PCM audio using AudioWorkletNode of Web Audio API.
+For the security constraints of major web-browsers, you need to run JupyterLab with HTTPS context.
 
 ## Installation
 
 You can install using `pip`:
 
 ```bash
-pip install ipyaudioworklet
+pip install git+https://github.com/naoh16/ipyaudioworklet.git
 ```
 
 If you are using Jupyter Notebook 5.2 or earlier, you may also need to enable
