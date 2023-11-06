@@ -117,10 +117,10 @@ let buffers:any[] = []
 export let audiodata:any[] = []; //new Float32Array(_audiodata);
 export let blob_url:string = "";
 
-export async function run(annealing_time_ms=500) {
+export async function run(full_app_url="", annealing_time_ms=500) {
   console.log('(1)');
   await prepareCustomAudioProcessor(
-    "/lab/extensions/ipyaudioworklet/static/audio-processor.js",
+    full_app_url + "/extensions/@naoh16/ipyaudioworklet/static/audio-processor.js",
     "audio-reorder-processor");
   console.log(audioRecorderNode);
 

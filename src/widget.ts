@@ -11,6 +11,17 @@ import { MODULE_NAME, MODULE_VERSION } from './version';
 
 import * as a from './audio';
 
+let fullAppUrl = '/lab';
+try {
+  const e:any = window.document.querySelector('#jupyter-config-data');
+  const jconfig:any = JSON.parse(e.textContent);
+  fullAppUrl = jconfig['fullAppUrl']
+} catch (error) {
+  // nop
+}
+
+
+
 // Import the CSS
 //import '../css/widget.css';
 
@@ -95,7 +106,7 @@ export class AudioRecorderView extends DOMWidgetView {
   private _onClickBootButton() {
     this.model.set('value', 'AudioRecorder is booting...');
     this.model.save_changes();
-    a.run().then((r) => {
+    a.run(fullAppUrl).then((r) => {
       let _sampleRate = a.getSampleRate();
       this.model.set('value', 'AudioRecorder is ready (Sampling rate: ' + String(_sampleRate) + ' Hz).');
       this.model.set('sampleRate', _sampleRate);

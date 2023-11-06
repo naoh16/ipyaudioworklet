@@ -33,7 +33,8 @@ classifiers = [
 ]
 dependencies = [
     "ipywidgets>=7.0.0",
-    "traittypes"
+    "traittypes",
+    "numpy"
 ]
 version = "0.1.0.dev0"
 
@@ -56,7 +57,7 @@ test = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/myorg/ipyaudioworklet"
+Homepage = "https://github.com/naoh16/ipyaudioworklet"
 
 [tool.hatch.build]
 artifacts = [
@@ -67,8 +68,8 @@ artifacts = [
 
 [tool.hatch.build.targets.wheel.shared-data]
 "ipyaudioworklet/nbextension" = "share/jupyter/nbextensions/ipyaudioworklet"
-"ipyaudioworklet/labextension" = "share/jupyter/labextensions/ipyaudioworklet"
-"./install.json" = "share/jupyter/labextensions/ipyaudioworklet/install.json"
+"ipyaudioworklet/labextension" = "share/jupyter/labextensions/@naoh16/ipyaudioworklet"
+"./install.json" = "share/jupyter/labextensions/@naoh16/ipyaudioworklet/install.json"
 "./ipyaudioworklet.json" = "etc/jupyter/nbconfig/notebook.d/ipyaudioworklet.json"
 
 [tool.hatch.build.targets.sdist]
