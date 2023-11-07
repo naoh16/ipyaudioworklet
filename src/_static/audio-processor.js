@@ -12,7 +12,12 @@ class AudioRecorderProcessor extends AudioWorkletProcessor {
     process(inputs, outputs, params) {
       if(!inputs[0][0]) return true;
 
-      if(params.isRecording > 0) {
+      if(params.isRecording[0] > 0) {
+        // We will receive the params with two cases:
+        //   a) isRecording[0]
+        //   b) isRecording[0], isRecording[1], ..., isRecording[127]
+        // The value at 0 is probably sufficient for most use cases:
+        //   128 sample at 44,100 Hz means about 2.9 ms segment.
         const firstInput = inputs[0];
         const firstOutput = outputs[0];
         const f2s_gain = 1. / firstInput.length;

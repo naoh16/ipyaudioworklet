@@ -107,7 +107,7 @@ export class AudioRecorderView extends DOMWidgetView {
     this.model.set('value', 'AudioRecorder is booting...');
     this.model.save_changes();
     a.run(fullAppUrl).then((r) => {
-      let _sampleRate = a.getSampleRate();
+      let _sampleRate = a.getSampleRate() || -1;
       this.model.set('value', 'AudioRecorder is ready (Sampling rate: ' + String(_sampleRate) + ' Hz).');
       this.model.set('sampleRate', _sampleRate);
       this.model.save_changes();

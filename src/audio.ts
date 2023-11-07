@@ -5,7 +5,11 @@ class DataViewEx extends DataView {
 }
 
 function encodeAudioAsWavfile (audiodata:any[], settings:MediaTrackSettings) {
-  console.assert(settings.sampleSize == 16, "sampleSize (Bit-per-sample) should be 16.", settings);
+  // console.assert(settings.sampleSize == 16, "sampleSize (Bit-per-sample) should be 16.", settings);
+  if(settings.sampleSize != 16) {
+    console.log("Warning: SampleSize is not 16 [bit].\n"
+              + "The sound is forcely quantized as int16 (signed short) sound.", settings);
+  }
   //console.assert(settings.channelCount == 1, "#Channel should be one (monoral).", settings);
   if(settings.channelCount != 1) {
       console.log("Warning: #Channel is not 1 (monoral).\n"
@@ -15,8 +19,8 @@ function encodeAudioAsWavfile (audiodata:any[], settings:MediaTrackSettings) {
   // see WAVEFORMAT_EX
   // https://learn.microsoft.com/ja-jp/windows/win32/api/mmeapi/ns-mmeapi-waveformatex
   const _nSamplesPerSec = settings.sampleRate || 48000;     // ex. 48000 [Hz]
-  const _nChannels      = 1; // settings.channelCount;   // ex. 1 [ch]
-  const _wBitsPerSample = settings.sampleSize || 16;     // ex. 16 [bit]
+  const _nChannels      = 1;  // settings.channelCount;   // ex. 1 [ch]
+  const _wBitsPerSample = 16; // settings.sampleSize || 16;     // ex. 16 [bit]
   const _nBlockAlign    = _nChannels * _wBitsPerSample / 8; // ex. 2 [byte]
   const _nAvgBytesPerSec = _nBlockAlign * _nSamplesPerSec; // ex. 96000 [byte/sec]
 
@@ -95,7 +99,9 @@ async function readyAudioSource(constraints:any = undefined) {
         constraints = {
           video: false,
           audio: {
-            channelCount: 1, /** channelCount will be ignored... */
+            channelCount: {ideal: 1}, /** channelCount will be ignored... */
+            sampleRate: {ideal: audioContext.sampleRate},
+            sampleSize: {ideal: 16},
             autoGainControl: false, echoCancellation: false, noiseSuppression: false,
           }
         }
@@ -103,6 +109,8 @@ async function readyAudioSource(constraints:any = undefined) {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       audioSource = await audioContext.createMediaStreamSource(stream);
       mediaConfig = await stream.getAudioTracks()[0].getSettings();
+      // Fix sampleRate
+      mediaConfig.sampleRate = mediaConfig.sampleRate || audioContext.sampleRate;
       console.log(stream);
       console.log(mediaConfig);
     } catch (e) {
@@ -142,7 +150,7 @@ export async function run(full_app_url="", annealing_time_ms=500) {
 }
 
 export function getSampleRate(): number|undefined {
-  return mediaConfig.sampleRate;
+  return mediaConfig.sampleRate || audioContext.sampleRate;
 }
 
 export function resume() {
@@ -157,7 +165,6 @@ export function suspend() {
   audioContext.suspend();
   audioRecorderNode.parameters.get('isRecording').setValueAtTime(0, audioContext.currentTime)
   console.log("suspended");
-  // return buffers;
 
   const dataLengthSample = buffers.reduce((a, v) => a + v.length, 0);
   audiodata = new Array(dataLengthSample);
