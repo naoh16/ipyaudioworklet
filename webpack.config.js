@@ -57,7 +57,7 @@ module.exports = [
         path: path.resolve(__dirname, 'dist'),
         libraryTarget: 'amd',
         library: "ipyaudioworklet",
-        publicPath: 'https://unpkg.com/ipyaudioworklet@' + version + '/dist/'
+        publicPath: 'https://unpkg.com/@naoh16/ipyaudioworklet@' + version + '/dist/'
     },
     devtool: 'source-map',
     module: {
@@ -67,6 +67,22 @@ module.exports = [
     resolve,
   },
 
+  /**
+   * AudioWorkletNode module bundle
+   */
+  {
+    entry: './src/_static/audio-processor.js',
+    output: {
+      filename: 'audio-processor.js',
+      path: path.resolve(__dirname, 'dist'),
+      libraryTarget: 'amd',
+      library: "ipyaudioworklet",
+      publicPath: 'https://unpkg.com/@naoh16/ipyaudioworklet@' + version + '/dist/'
+    },
+    devtool: 'source-map',
+    externals,
+    resolve,
+  },
 
   /**
    * Documentation widget bundle
@@ -87,17 +103,6 @@ module.exports = [
     devtool: 'source-map',
     externals,
     resolve,
-    plugins: [
-      new CopyFilePlugin({
-        patterns: [
-          {
-            context: path.resolve(__dirname, "src/_static"),
-            from: path.resolve(__dirname, "src/_static/"),
-            to: path.resolve(__dirname, "dist/"),
-          },
-        ],
-      }),
-    ],
   }
 
 ];
