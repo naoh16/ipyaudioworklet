@@ -36,6 +36,10 @@ the nbextension:
 jupyter nbextension enable --py [--sys-prefix|--user|--system] ipyaudioworklet
 ```
 
+## Usage
+
+See examples: [examples/introduction.ipynb](examples/introduction.ipynb)
+
 ## Development Installation
 
 Create a dev environment:
