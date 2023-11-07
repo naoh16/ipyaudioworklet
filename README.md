@@ -16,9 +16,19 @@ For the security constraints of major web-browsers, you need to run JupyterLab w
 
 You can install using `pip`:
 
+### Prebuild
+
+```bash
+pip install -U https://github.com/naoh16/ipyaudioworklet/releases/download/v0.1.2/ipyaudioworklet-0.1.2-py3-none-any.whl
+```
+
+### Self-build from master branch
+
 ```bash
 pip install git+https://github.com/naoh16/ipyaudioworklet.git
 ```
+
+### Miscs
 
 If you are using Jupyter Notebook 5.2 or earlier, you may also need to enable
 the nbextension:
