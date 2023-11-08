@@ -19,7 +19,7 @@ You can install using `pip`:
 ### Prebuild
 
 ```bash
-pip install -U https://github.com/naoh16/ipyaudioworklet/releases/download/v0.1.2/ipyaudioworklet-0.1.2-py3-none-any.whl
+pip install -U https://github.com/naoh16/ipyaudioworklet/releases/download/v0.1.3/ipyaudioworklet-0.1.3-py3-none-any.whl
 ```
 
 ### Self-build from master branch
