@@ -55,7 +55,7 @@ export class DummyManager extends baseManager.ManagerBase {
     msg: services.KernelMessage.IMessage,
     view: widgets.DOMWidgetView,
     options: any
-  ) {
+  ): Promise<HTMLElement> {
     // TODO: make this a spy
     // TODO: return an html element
     return Promise.resolve(view).then((view) => {

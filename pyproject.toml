@@ -49,7 +49,9 @@ docs = [
     "sphinx>=1.5",
     "sphinx_rtd_theme",
 ]
-examples = []
+examples = [
+    "matplotlib"
+]
 test = [
     "nbval",
     "pytest-cov",

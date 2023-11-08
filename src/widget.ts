@@ -13,20 +13,18 @@ import * as a from './audio';
 
 let fullAppUrl = '/lab';
 try {
-  const e:any = window.document.querySelector('#jupyter-config-data');
-  const jconfig:any = JSON.parse(e.textContent);
-  fullAppUrl = jconfig['fullAppUrl']
+  const e: any = window.document.querySelector('#jupyter-config-data');
+  const jconfig: any = JSON.parse(e.textContent);
+  fullAppUrl = jconfig['fullAppUrl'];
 } catch (error) {
   // nop
 }
-
-
 
 // Import the CSS
 //import '../css/widget.css';
 
 export class AudioRecorderModel extends DOMWidgetModel {
-  defaults() {
+  defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
       _model_name: AudioRecorderModel.model_name,
@@ -62,25 +60,37 @@ export class AudioRecorderView extends DOMWidgetView {
   private _bootButton: HTMLButtonElement;
   private _resumeButton: HTMLButtonElement;
   private _suspendButton: HTMLButtonElement;
-  render() {
+  render(): any {
     this._message = document.createElement('div');
     this.el.appendChild(this._message);
 
     this._bootButton = document.createElement('button');
-    this._bootButton.classList.add('jupyter-widgets','jupyter-button', 'widget-button');
-    this._bootButton.textContent = "Boot RECORDER";
+    this._bootButton.classList.add(
+      'jupyter-widgets',
+      'jupyter-button',
+      'widget-button'
+    );
+    this._bootButton.textContent = 'Boot RECORDER';
     this.el.appendChild(this._bootButton);
 
     this._resumeButton = document.createElement('button');
-    this._resumeButton.classList.add('jupyter-widgets','jupyter-button', 'widget-button');
+    this._resumeButton.classList.add(
+      'jupyter-widgets',
+      'jupyter-button',
+      'widget-button'
+    );
     this._resumeButton.disabled = true;
-    this._resumeButton.textContent = "Record";
+    this._resumeButton.textContent = 'Record';
     this.el.appendChild(this._resumeButton);
 
     this._suspendButton = document.createElement('button');
-    this._suspendButton.classList.add('jupyter-widgets','jupyter-button', 'widget-button');
+    this._suspendButton.classList.add(
+      'jupyter-widgets',
+      'jupyter-button',
+      'widget-button'
+    );
     this._suspendButton.disabled = true;
-    this._suspendButton.textContent = "Stop";
+    this._suspendButton.textContent = 'Stop';
     this.el.appendChild(this._suspendButton);
 
     this._audioControl = document.createElement('audio');
@@ -98,7 +108,7 @@ export class AudioRecorderView extends DOMWidgetView {
     this._suspendButton.onclick = this._onClickSuspendButton.bind(this);
   }
 
-  value_changed() {
+  value_changed(): void {
     // this.el.textContent = this.model.get('value');
     this._message.textContent = this.model.get('value');
   }
@@ -107,21 +117,26 @@ export class AudioRecorderView extends DOMWidgetView {
     this.model.set('value', 'AudioRecorder is booting...');
     this.model.save_changes();
     a.run(fullAppUrl).then((r) => {
-      let _sampleRate = a.getSampleRate() || -1;
-      this.model.set('value', 'AudioRecorder is ready (Sampling rate: ' + String(_sampleRate) + ' Hz).');
+      const _sampleRate = a.getSampleRate() || -1;
+      this.model.set(
+        'value',
+        'AudioRecorder is ready (Sampling rate: ' +
+          String(_sampleRate) +
+          ' Hz).'
+      );
       this.model.set('sampleRate', _sampleRate);
       this.model.save_changes();
 
       this._bootButton.disabled = true;
-      this._resumeButton.disabled  = false;
-    })
+      this._resumeButton.disabled = false;
+    });
   }
   private _onClickResumeButton() {
     a.resume();
     this.model.set('value', this._message.textContent + ' [RESUME]');
     this.model.save_changes();
 
-    this._resumeButton.disabled  = true;
+    this._resumeButton.disabled = true;
     this._suspendButton.disabled = false;
   }
   private _onClickSuspendButton() {
@@ -134,7 +149,7 @@ export class AudioRecorderView extends DOMWidgetView {
 
     this._audioControl.src = a.blob_url;
     this._audioControl.title = this.model.get('filename');
-    this._resumeButton.disabled  = false;
+    this._resumeButton.disabled = false;
     this._suspendButton.disabled = true;
   }
 }
