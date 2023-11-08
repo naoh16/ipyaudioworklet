@@ -21,11 +21,9 @@ class AudioRecorderProcessor extends AudioWorkletProcessor {
         const firstInput = inputs[0];
         const firstOutput = outputs[0];
         const f2s_gain = 1. / firstInput.length;
-        if(firstInput.length != 1) {
-          for(let n=0; n<firstInput.length; n++) {
-            for(let m=0; m<firstInput[0].length; m++) {
-              firstOutput[0][m] += firstInput[n][m] * f2s_gain;
-            }
+        for(let n=0; n<firstInput.length; n++) {
+          for(let m=0; m<firstInput[0].length; m++) {
+            firstOutput[0][m] += firstInput[n][m] * f2s_gain;
           }
         }
         this.port.postMessage(firstOutput[0]); // send only 1 channel.
