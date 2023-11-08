@@ -2,7 +2,6 @@
 requires = [
     "hatchling>=1.3.1",
     "jupyterlab==3.*",
-    "matplotlib"
 ]
 build-backend = "hatchling.build"
 
@@ -50,7 +49,9 @@ docs = [
     "sphinx>=1.5",
     "sphinx_rtd_theme",
 ]
-examples = []
+examples = [
+    "matplotlib"
+]
 test = [
     "nbval",
     "pytest-cov",
