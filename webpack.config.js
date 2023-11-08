@@ -41,7 +41,7 @@ module.exports = [
   },
 
   /**
-   * Embeddable ipyaudioworklet bundle
+   * Embeddable @naoh16/ipyaudioworklet bundle
    *
    * This bundle is almost identical to the notebook extension bundle. The only
    * difference is in the configuration of the webpack public path for the
@@ -56,7 +56,7 @@ module.exports = [
         filename: 'index.js',
         path: path.resolve(__dirname, 'dist'),
         libraryTarget: 'amd',
-        library: "ipyaudioworklet",
+        library: "@naoh16/ipyaudioworklet",
         publicPath: 'https://unpkg.com/@naoh16/ipyaudioworklet@' + version + '/dist/'
     },
     devtool: 'source-map',
@@ -78,7 +78,7 @@ module.exports = [
     output: {
       filename: 'embed-bundle.js',
       path: path.resolve(__dirname, 'docs', 'source', '_static'),
-      library: "ipyaudioworklet",
+      library: "@naoh16/ipyaudioworklet",
       libraryTarget: 'amd'
     },
     module: {
