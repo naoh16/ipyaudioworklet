@@ -6,7 +6,7 @@ Developer install
 To install a developer version of ipyaudioworklet, you will first need to clone
 the repository::
 
-    git clone https://github.com/myorg/ipyaudioworklet
+    git clone https://github.com/naoh16/ipyaudioworklet
     cd ipyaudioworklet
 
 Next, install it with a develop install using pip::
