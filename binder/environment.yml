@@ -1,0 +1,11 @@
+name: ipyaudioworklet
+channels:
+  - conda-forge
+dependencies:
+  - jupyterlab
+  - ipywidgets
+  - numpy
+  - traittypes
+  - matplotlib
+  - pip:
+    - ipyaudioworklet==0.2.0

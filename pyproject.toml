@@ -119,6 +119,10 @@ version_template = "version_info = ({major}, {minor}, {patch})"
 src = "ipyaudioworklet/_frontend.py"
 search = "module_version = "
 
+[[tool.tbump.file]]
+src = "binder/environment.yml"
+search = "ipyaudioworklet=="
+
 [tool.tbump.version]
 current = "0.2.0"
 regex = '''
