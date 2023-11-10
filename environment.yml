@@ -7,5 +7,5 @@ dependencies:
   - numpy
   - traittypes
   - matplotlib
-pip:
-  - ipyaudioworklet=0.2.0
+  - pip:
+    - ipyaudioworklet=0.2.0
