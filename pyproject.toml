@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     "hatchling>=1.3.1",
-    "jupyterlab==3.*",
+    "jupyterlab>3",
 ]
 build-backend = "hatchling.build"
 
@@ -22,6 +22,7 @@ keywords = [
 classifiers = [
     "Framework :: Jupyter",
     "Framework :: Jupyter :: JupyterLab :: 3",
+    "Framework :: Jupyter :: JupyterLab :: 4",
     "Framework :: Jupyter :: JupyterLab :: Extensions",
     "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",
     "Intended Audience :: Developers",
@@ -33,6 +34,8 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Multimedia :: Sound/Audio",
 ]
 dependencies = [
     "ipywidgets>=7.0.0",
