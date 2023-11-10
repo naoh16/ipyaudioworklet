@@ -48,6 +48,11 @@ jupyter nbextension enable --py [--sys-prefix|--user|--system] ipyaudioworklet
 
 See examples: [examples/introduction.ipynb](examples/introduction.ipynb)
 
+You can try on Binder:
+
+.. image:: https://mybinder.org/badge_logo.svg
+   :target: https://mybinder.org/v2/gh/naoh16/ipyaudioworklet/feature/binder_demo?labpath=examples
+
 ## Development Installation
 
 Create a dev environment:
