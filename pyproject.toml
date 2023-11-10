@@ -145,5 +145,9 @@ tag_template = "v{new_version}"
 #  cmd = "grep -q {new_version} Changelog.rst"
 
 [[tool.tbump.after_push]]
+name = "yarn build labextension"
+cmd  = "yarn build"
+
+[[tool.tbump.after_push]]
 name = "hatch build wheel"
 cmd  = "hatch build"
