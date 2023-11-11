@@ -32,6 +32,50 @@ pip install -U https://github.com/naoh16/ipyaudioworklet/releases/download/v0.1.
 pip install git+https://github.com/naoh16/ipyaudioworklet.git
 ```
 
+## Usage
+
+### quickstart
+
+- You can see the interface as following cell:
+
+  ```python
+  import ipyaudioworklet as ipyaudio
+  
+  ipyaudio.AudioRecorder()
+  ```
+
+- Then you can find three buttons in the widget.
+
+  - `Boot RECORDER`
+    -  As first, you need to push the button to boot up the recorder.
+    -  Please allow your web browser access to your PC's microphone.
+  - `Record`
+    - You can record audio.
+  - `Stop`
+    - You can stop the recording.
+  - audio control (HTML5's ``<audio>``)
+    - You can preview the recroded sound.
+    - You may download the sound as WAV file through option menu of the control. (depend on your web browser)
+
+### Examples
+
+See examples: [examples/introduction.ipynb](examples/introduction.ipynb)
+
+You can try them on Binder:
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/naoh16/ipyaudioworklet/main?labpath=examples)
+
+
+## For developers and Audio/Sound reserchers!!
+
+Please check the following files. They are the core modules of this extension.
+
+- JupyterLab/ipywidgets interface
+  - [src/widgets.ts](src/widgets.ts) ... Frontend of the widget
+  - [ipyaudioworklet/audio.py](ipyaudioworklet/audio.py) ... Backend of the widget
+- Audio Recording
+  - [src/audio.ts](src/audio.ts) ... Utility functions using Web Audio API
+  - [src/_static/audio-processor.js](src/_static/audio-processor.js) ... AudioWorkletNode definition. This node is ping pong the recording audio fragments to the callback function defined in `audio.ts`.
+
 ---
 
 TODO: The following lines are not modified from cookie-cutter templates.
@@ -43,13 +87,6 @@ the nbextension:
 ```bash
 jupyter nbextension enable --py [--sys-prefix|--user|--system] ipyaudioworklet
 ```
-
-## Usage
-
-See examples: [examples/introduction.ipynb](examples/introduction.ipynb)
-
-You can try them on Binder:
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/naoh16/ipyaudioworklet/main?labpath=examples)
 
 ## Development Installation
 
