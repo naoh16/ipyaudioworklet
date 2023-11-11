@@ -73,7 +73,7 @@ export class AudioRecorderView extends DOMWidgetView {
       'widget-button'
     );
     this._bootButton.textContent = 'Boot RECORDER';
-    this._bootButton.title = 'run()'
+    this._bootButton.title = 'run()';
     this.el.appendChild(this._bootButton);
 
     this._resumeButton = document.createElement('button');
@@ -84,7 +84,7 @@ export class AudioRecorderView extends DOMWidgetView {
     );
     this._resumeButton.disabled = true;
     this._resumeButton.textContent = 'Record';
-    this._resumeButton.title = 'resume()'
+    this._resumeButton.title = 'resume()';
     this.el.appendChild(this._resumeButton);
 
     this._suspendButton = document.createElement('button');
@@ -106,7 +106,7 @@ export class AudioRecorderView extends DOMWidgetView {
 
     // Python --> JavaScipt update
     this.model.on('change:value', this.value_changed, this);
-    this.model.on('msg:custom', this.on_msg, this)
+    this.model.on('msg:custom', this.on_msg, this);
 
     // JavaScipt --> Python update
     this._bootButton.onclick = this._onClickBootButton.bind(this);
@@ -120,16 +120,16 @@ export class AudioRecorderView extends DOMWidgetView {
 
   private on_msg(command: any, buffers: any) {
     switch (command.cmd) {
-      case `run`:
+      case 'run':
         this._onClickBootButton();
         break;
-      case `resume`:
+      case 'resume':
         this._onClickResumeButton();
         break;
-      case `suspend`:
+      case 'suspend':
         this._onClickSuspendButton();
         break;
-        }
+    }
   }
 
   private _onClickBootButton() {
