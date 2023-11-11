@@ -27,3 +27,17 @@ class AudioRecorder(DOMWidget):
     audiodata = Array([], dtype='float32').tag(sync=True)
     blob_url = Unicode('').tag(sync=True)
     filename = Unicode('default.wav').tag(sync=True)
+
+    ####################################################
+    # Access TypeScript's functions via custom message
+    # see also src/widgets.ts#AudioRecorderView.on_msg()
+    ####################################################
+
+    def run(self):
+        self.send({'cmd': 'run', 'args': []})
+
+    def resume(self):
+        self.send({'cmd': 'resume', 'args': []})
+
+    def suspend(self):
+        self.send({'cmd': 'suspend', 'args': []})
