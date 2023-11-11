@@ -61,6 +61,8 @@ export class AudioRecorderView extends DOMWidgetView {
   private _resumeButton: HTMLButtonElement;
   private _suspendButton: HTMLButtonElement;
   render(): any {
+    this.el.classList.add('jupyter-widgets');
+
     this._message = document.createElement('div');
     this.el.appendChild(this._message);
 
@@ -71,6 +73,7 @@ export class AudioRecorderView extends DOMWidgetView {
       'widget-button'
     );
     this._bootButton.textContent = 'Boot RECORDER';
+    this._bootButton.title = 'run()'
     this.el.appendChild(this._bootButton);
 
     this._resumeButton = document.createElement('button');
@@ -81,6 +84,7 @@ export class AudioRecorderView extends DOMWidgetView {
     );
     this._resumeButton.disabled = true;
     this._resumeButton.textContent = 'Record';
+    this._resumeButton.title = 'resume()'
     this.el.appendChild(this._resumeButton);
 
     this._suspendButton = document.createElement('button');
@@ -91,6 +95,7 @@ export class AudioRecorderView extends DOMWidgetView {
     );
     this._suspendButton.disabled = true;
     this._suspendButton.textContent = 'Stop';
+    this._suspendButton.title = 'suspend()';
     this.el.appendChild(this._suspendButton);
 
     this._audioControl = document.createElement('audio');
@@ -101,6 +106,7 @@ export class AudioRecorderView extends DOMWidgetView {
 
     // Python --> JavaScipt update
     this.model.on('change:value', this.value_changed, this);
+    this.model.on('msg:custom', this.on_msg, this)
 
     // JavaScipt --> Python update
     this._bootButton.onclick = this._onClickBootButton.bind(this);
@@ -108,9 +114,22 @@ export class AudioRecorderView extends DOMWidgetView {
     this._suspendButton.onclick = this._onClickSuspendButton.bind(this);
   }
 
-  value_changed(): void {
-    // this.el.textContent = this.model.get('value');
+  private value_changed(): void {
     this._message.textContent = this.model.get('value');
+  }
+
+  private on_msg(command: any, buffers: any) {
+    switch (command.cmd) {
+      case `run`:
+        this._onClickBootButton();
+        break;
+      case `resume`:
+        this._onClickResumeButton();
+        break;
+      case `suspend`:
+        this._onClickSuspendButton();
+        break;
+        }
   }
 
   private _onClickBootButton() {
