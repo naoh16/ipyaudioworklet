@@ -10,6 +10,8 @@ A Jupyter Widget for Web Audio Recording using Audio Worklet
 This extension will be enable us to record PCM audio using AudioWorkletNode of Web Audio API.
 For the security constraints of major web-browsers, you need to run JupyterLab with HTTPS context.
 
+![Screenshot](docs/source/_static/screenshot_1.png)
+
 ## Installation
 
 You can install using `pip`:
@@ -41,17 +43,18 @@ pip install git+https://github.com/naoh16/ipyaudioworklet.git
   ```python
   import ipyaudioworklet as ipyaudio
   
-  ipyaudio.AudioRecorder()
+  recorder = ipyaudio.AudioRecorder()
+  recorder
   ```
 
 - Then you can find three buttons in the widget.
 
-  - `Boot RECORDER`
+  - `[Boot RECORDER]` Button / `recorder.run()`
     -  As first, you need to push the button to boot up the recorder.
     -  Please allow your web browser access to your PC's microphone.
-  - `Record`
+  - `[Record]` Button / `recorder.resume()`
     - You can record audio.
-  - `Stop`
+  - `[Stop]` Button / `recorder.suspend()`
     - You can stop the recording.
   - audio control (HTML5's ``<audio>``)
     - You can preview the recroded sound.
