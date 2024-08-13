@@ -13,14 +13,15 @@ import * as a from './audio';
 
 let extensionUrl = '/lab';
 try {
-  if(window.document.body.classList.contains('notebook_app')) {
+  if (window.document.body.classList.contains('notebook_app')) {
     // Jupyter Notebook 6.x
     extensionUrl = '/nbextensions/ipyaudioworklet';
   } else {
     // Jupyter Lab 3, 4, or Jupyter Notebook 7.x
     const e: any = window.document.querySelector('#jupyter-config-data');
     const jconfig: any = JSON.parse(e.textContent);
-    extensionUrl = jconfig['fullAppUrl'] + '/extensions/@naoh16/ipyaudioworklet';
+    extensionUrl =
+      jconfig['fullAppUrl'] + '/extensions/@naoh16/ipyaudioworklet';
   }
 } catch (error) {
   // nop
