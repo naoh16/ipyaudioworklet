@@ -1,9 +1,10 @@
 
 # ipyaudioworklet
 
+<!--
 [![Build Status](https://travis-ci.org/naoh16/ipyaudioworklet.svg?branch=master)](https://travis-ci.org/naoh16/ipyaudioworklet)
 [![codecov](https://codecov.io/gh/naoh16/ipyaudioworklet/branch/master/graph/badge.svg)](https://codecov.io/gh/naoh16/ipyaudioworklet)
-
+-->
 
 A Jupyter Widget for Web Audio Recording using Audio Worklet
 
