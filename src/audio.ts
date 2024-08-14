@@ -88,6 +88,38 @@ function encodeAudioAsWavfile(audiodata: any[], settings: MediaTrackSettings) {
   return new Blob([dv], { type: 'audio/wav' });
 }
 
+const procdef_str = `class AudioRecorderProcessor extends AudioWorkletProcessor
+{
+  constructor() {
+    super();
+  }
+
+  static get parameterDescriptors() {
+    return [
+      { name: "isRecording", defaultValue: 0 }
+    ];
+  }
+
+  process(inputs, outputs, params) {
+    if(!inputs[0][0]) return true;
+
+    if(params.isRecording[0] > 0) {
+      const firstInput = inputs[0];
+      const firstOutput = outputs[0];
+      const f2s_gain = 1. / firstInput.length;
+      for(let n=0; n<firstInput.length; n++) {
+        for(let m=0; m<firstInput[0].length; m++) {
+          firstOutput[0][m] += firstInput[n][m] * f2s_gain;
+        }
+      }
+      this.port.postMessage(firstOutput[0]);
+    }
+
+    return true;
+  }
+}
+registerProcessor("audio-recorder-processor", AudioRecorderProcessor);`;
+
 //const AudioContext = window.AudioContext || window.webkitAudioContext;
 if (navigator.mediaDevices) {
   console.log('Info: getUserMedia is supported.');
@@ -157,13 +189,13 @@ export let audiodata: any[] = []; //new Float32Array(_audiodata);
 export let blob_url = '';
 
 export async function run(
-  audio_processor_js_url = '',
   annealing_time_ms = 500
 ): Promise<void> {
   console.log('(1)');
+  const blob = new Blob([procdef_str], { type: 'application/javascript' });
   await prepareCustomAudioProcessor(
-    audio_processor_js_url,
-    'audio-reorder-processor'
+    URL.createObjectURL(blob),
+    'audio-recorder-processor'
   );
   console.log(audioRecorderNode);
 
