@@ -157,12 +157,12 @@ export let audiodata: any[] = []; //new Float32Array(_audiodata);
 export let blob_url = '';
 
 export async function run(
-  extension_url = '',
+  audio_processor_js_url = '',
   annealing_time_ms = 500
 ): Promise<void> {
   console.log('(1)');
   await prepareCustomAudioProcessor(
-    extension_url + '/static/audio-processor.js',
+    audio_processor_js_url,
     'audio-reorder-processor'
   );
   console.log(audioRecorderNode);

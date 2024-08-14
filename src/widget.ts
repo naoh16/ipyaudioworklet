@@ -11,17 +11,22 @@ import { MODULE_NAME, MODULE_VERSION } from './version';
 
 import * as a from './audio';
 
-let extensionUrl = '/lab';
+let audioProcessorJsUrl =
+  'https://cdn.jsdelivr.net/npm/@naoh16/ipyaudioworklet@' +
+  MODULE_VERSION +
+  '/dist/audio-processor.js';
 try {
   if (window.document.body.classList.contains('notebook_app')) {
     // Jupyter Notebook 6.x
-    extensionUrl = '/nbextensions/ipyaudioworklet';
+    audioProcessorJsUrl =
+      '/nbextensions/ipyaudioworklet/static/audio-processor.js';
   } else {
     // Jupyter Lab 3, 4, or Jupyter Notebook 7.x
     const e: any = window.document.querySelector('#jupyter-config-data');
     const jconfig: any = JSON.parse(e.textContent);
-    extensionUrl =
-      jconfig['fullAppUrl'] + '/extensions/@naoh16/ipyaudioworklet';
+    audioProcessorJsUrl =
+      jconfig['fullAppUrl'] +
+      '/extensions/@naoh16/ipyaudioworklet/static/audio-processor.js';
   }
 } catch (error) {
   // nop
@@ -142,7 +147,7 @@ export class AudioRecorderView extends DOMWidgetView {
   private _onClickBootButton() {
     this.model.set('value', 'AudioRecorder is booting...');
     this.model.save_changes();
-    a.run(extensionUrl).then((r) => {
+    a.run(audioProcessorJsUrl).then((r) => {
       const _sampleRate = a.getSampleRate() || -1;
       this.model.set(
         'value',
