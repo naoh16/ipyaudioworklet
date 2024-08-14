@@ -152,3 +152,18 @@ pip install tbump
 tbump <new-version>
 ```
 
+## Publish public repository and CDNs
+
+### PyPI
+
+```bash
+pip install twine
+twine upload --repository testpypi dist/ipyaudioworklet-<new-version>*whl
+twine upload --repository pypi dist/ipyaudioworklet-<new-version>*whl
+```
+
+### NPM
+
+```bash
+npm publish --access public
+```
