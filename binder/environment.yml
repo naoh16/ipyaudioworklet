@@ -8,4 +8,4 @@ dependencies:
   - traittypes
   - matplotlib
   - pip:
-    - ipyaudioworklet==0.5.0
+    - ipyaudioworklet==0.5.1
