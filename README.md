@@ -152,6 +152,12 @@ pip install tbump
 tbump <new-version>
 ```
 
+## Build sdist and wheel
+
+```bash
+hatch build
+```
+
 ## Publish public repository and CDNs
 
 ### PyPI
