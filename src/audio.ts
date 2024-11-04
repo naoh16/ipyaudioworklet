@@ -185,7 +185,7 @@ async function readyAudioSource(constraints: any = undefined) {
 }
 
 let buffers: any[] = [];
-export let audiodata: any[] = []; //new Float32Array(_audiodata);
+export let audiodata: any[]; //new Float32Array(_audiodata);
 export let blob_url = '';
 
 export async function run(

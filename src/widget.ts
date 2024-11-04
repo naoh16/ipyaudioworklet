@@ -6,6 +6,9 @@ import {
   DOMWidgetView,
   ISerializers,
 } from '@jupyter-widgets/base';
+import {
+  simplearray_serialization,
+} from "jupyter-dataserializers"
 
 import { MODULE_NAME, MODULE_VERSION } from './version';
 
@@ -26,15 +29,16 @@ export class AudioRecorderModel extends DOMWidgetModel {
       _view_module_version: AudioRecorderModel.view_module_version,
 
       value: 'Audio Recorder',
-      audiodata: [],
+      audiodata: new Float32Array(0),
       blob_url: '',
       filename: 'default.wav',
+      status: 'NOT_INITIALIZED'
     };
   }
 
   static serializers: ISerializers = {
     ...DOMWidgetModel.serializers,
-    // Add any extra serializers here
+    audiodata: simplearray_serialization as any
   };
 
   static model_name = 'AudioRecorderModel';
@@ -125,6 +129,7 @@ export class AudioRecorderView extends DOMWidgetView {
 
   private _onClickBootButton() {
     this.model.set('value', 'AudioRecorder is booting...');
+    this.model.set('status', 'INITIALIZING');
     this.model.save_changes();
     a.run().then((r) => {
         const _sampleRate = a.getSampleRate() || -1;
@@ -134,6 +139,7 @@ export class AudioRecorderView extends DOMWidgetView {
           String(_sampleRate) +
           ' Hz).'
       );
+      this.model.set('status', 'READY');
       this.model.set('sampleRate', _sampleRate);
       this.model.save_changes();
 
@@ -144,6 +150,7 @@ export class AudioRecorderView extends DOMWidgetView {
   private _onClickResumeButton() {
     a.resume();
     this.model.set('value', this._message.textContent + ' [RESUME]');
+    this.model.set('status', 'RECORDING');
     this.model.save_changes();
 
     this._resumeButton.disabled = true;
@@ -151,10 +158,14 @@ export class AudioRecorderView extends DOMWidgetView {
   }
   private _onClickSuspendButton() {
     a.suspend();
-    //console.log(a.audiodata);
-    this.model.set('audiodata', a.audiodata);
+    // console.log(a.audiodata);
+    this.model.set('audiodata', {
+      array: new Float32Array(a.audiodata),
+      shape: [a.audiodata.length]
+    });
     this.model.set('blob_url', a.blob_url);
     this.model.set('value', this._message.textContent + ' [SUSPEND]');
+    this.model.set('status', 'RECORDED');
     this.model.save_changes();
 
     this._audioControl.src = a.blob_url;

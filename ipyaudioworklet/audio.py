@@ -11,6 +11,8 @@ ipyaudioworklet.AudioRecorder
 from ipywidgets import DOMWidget
 from traitlets import Unicode, List, Int
 from traittypes import Array
+import numpy as np
+from ipydatawidgets import NDArray, array_serialization, shape_constraints
 from ._frontend import module_name, module_version
 
 class AudioRecorder(DOMWidget):
@@ -24,9 +26,12 @@ class AudioRecorder(DOMWidget):
 
     value = Unicode('Audio Recorder').tag(sync=True)
     sampleRate = Int(-1).tag(sync=True)
-    audiodata = Array([], dtype='float32').tag(sync=True)
+    audiodata = NDArray(dtype=np.float32, default_value=np.zeros((0,), dtype=np.float32))\
+        .tag(sync=True, **array_serialization)\
+        .valid(shape_constraints(None,))
     blob_url = Unicode('').tag(sync=True)
     filename = Unicode('default.wav').tag(sync=True)
+    status = Unicode('NOT_INITIALIZED').tag(sync=True)
 
     ####################################################
     # Access TypeScript's functions via custom message
