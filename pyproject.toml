@@ -39,6 +39,7 @@ classifiers = [
 ]
 dependencies = [
     "ipywidgets>=7.0.0",
+    "ipydatawidgets>=4.0.0",
     "traittypes",
     "numpy"
 ]
