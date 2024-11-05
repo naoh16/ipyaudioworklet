@@ -146,6 +146,7 @@ $RECYCLE.BIN/
 
 **/node_modules/
 ipyaudioworklet/nbextension/index.*
+.yarn/cache/
 
 # Coverage data
 # -------------

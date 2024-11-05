@@ -16,6 +16,7 @@ function encodeAudioAsWavfile(audiodata: any[], settings: MediaTrackSettings) {
     );
   }
   //console.assert(settings.channelCount == 1, "#Channel should be one (monoral).", settings);
+  // @ts-ignore: TS2339
   if (settings.channelCount !== 1) {
     console.log(
       'Warning: #Channel is not 1 (monoral).\n',
@@ -220,10 +221,11 @@ export function getSampleRate(): number | undefined {
   return mediaConfig.sampleRate || audioContext.sampleRate;
 }
 
-export function resume(): void {
+export function resume(cb_func: any): void {
   buffers = [];
   audioRecorderNode.port.onmessage = (e: any) => {
     buffers.push(e.data);
+    if(cb_func) cb_func(e.data);
   };
   audioContext.resume();
   audioRecorderNode.parameters

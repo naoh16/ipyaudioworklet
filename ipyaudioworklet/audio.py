@@ -29,6 +29,9 @@ class AudioRecorder(DOMWidget):
     audiodata = NDArray(dtype=np.float32, default_value=np.zeros((0,), dtype=np.float32))\
         .tag(sync=True, **array_serialization)\
         .valid(shape_constraints(None,))
+    audiochunk = NDArray(dtype=np.float32, default_value=np.zeros((0,), dtype=np.float32))\
+        .tag(sync=True, **array_serialization)\
+        .valid(shape_constraints(None,))
     blob_url = Unicode('').tag(sync=True)
     filename = Unicode('default.wav').tag(sync=True)
     status = Unicode('NOT_INITIALIZED').tag(sync=True)
@@ -46,3 +49,6 @@ class AudioRecorder(DOMWidget):
 
     def suspend(self):
         self.send({'cmd': 'suspend', 'args': []})
+
+    def use_audiochunk(self, use_flag=True):
+        self.send({'cmd': 'use_audiochunk', 'args': [use_flag]})

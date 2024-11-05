@@ -30,6 +30,7 @@ export class AudioRecorderModel extends DOMWidgetModel {
 
       value: 'Audio Recorder',
       audiodata: new Float32Array(0),
+      audiochunk: new Float32Array(0),
       blob_url: '',
       filename: 'default.wav',
       status: 'NOT_INITIALIZED'
@@ -38,7 +39,8 @@ export class AudioRecorderModel extends DOMWidgetModel {
 
   static serializers: ISerializers = {
     ...DOMWidgetModel.serializers,
-    audiodata: simplearray_serialization as any
+    audiodata: simplearray_serialization as any,
+    audiochunk: simplearray_serialization as any,
   };
 
   static model_name = 'AudioRecorderModel';
@@ -55,6 +57,7 @@ export class AudioRecorderView extends DOMWidgetView {
   private _bootButton: HTMLButtonElement;
   private _resumeButton: HTMLButtonElement;
   private _suspendButton: HTMLButtonElement;
+  private _useAudiochunk: Boolean = false;
   render(): any {
     this.el.classList.add('jupyter-widgets');
 
@@ -124,6 +127,9 @@ export class AudioRecorderView extends DOMWidgetView {
       case 'suspend':
         this._onClickSuspendButton();
         break;
+      case 'use_audiochunk':
+        this._useAudiochunk = command.args[0];
+        break;
     }
   }
 
@@ -148,7 +154,17 @@ export class AudioRecorderView extends DOMWidgetView {
     });
   }
   private _onClickResumeButton() {
-    a.resume();
+    if(this._useAudiochunk) {
+      a.resume((datachunk: any) => {
+        this.model.set('audiochunk', {
+          array: new Float32Array(datachunk),
+          shape: [datachunk.length]
+        });
+        this.model.save_changes();
+      });
+    } else {
+        a.resume(undefined);
+    }
     this.model.set('value', this._message.textContent + ' [RESUME]');
     this.model.set('status', 'RECORDING');
     this.model.save_changes();
