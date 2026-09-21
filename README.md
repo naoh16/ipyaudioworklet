@@ -109,7 +109,7 @@ When developing your extensions, you need to manually enable your extensions wit
 notebook / lab frontend. For lab, this is done by the command:
 
 ```
-jupyter labextension develop --overwrite .
+jupyter-builder develop --overwrite .
 yarn run build
 ```
 

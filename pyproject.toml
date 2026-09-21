@@ -1,7 +1,9 @@
 [build-system]
 requires = [
-    "hatchling>=1.3.1",
-    "jupyterlab>3",
+    "jupyterlab>=4.0.0",
+    "hatchling>=1.5.0",
+    "hatch-nodejs-version>=0.3.2",
+    "jupyter-builder>=1.0.0"
 ]
 build-backend = "hatchling.build"
 
@@ -10,7 +12,7 @@ name = "ipyaudioworklet"
 description = "A Jupyter Widget for Web Audio Recording using Audio Worklet"
 readme = "README.md"
 license = { file = "LICENSE.txt" }
-requires-python = ">=3.7"
+requires-python = ">=3.11"
 authors = [
     { name = "Sunao Hara", email = "sunao.hara@gmail.com" },
 ]
@@ -21,7 +23,6 @@ keywords = [
 ]
 classifiers = [
     "Framework :: Jupyter",
-    "Framework :: Jupyter :: JupyterLab :: 3",
     "Framework :: Jupyter :: JupyterLab :: 4",
     "Framework :: Jupyter :: JupyterLab :: Extensions",
     "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",
@@ -30,15 +31,15 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Multimedia :: Sound/Audio",
 ]
 dependencies = [
-    "ipywidgets>=7.0.0",
+    "ipywidgets>=8.0.0",
     "ipydatawidgets>=4.0.0",
     "traittypes",
     "numpy"
@@ -46,6 +47,13 @@ dependencies = [
 version = "0.6.0"
 
 [project.optional-dependencies]
+dev = [
+    "jupyterlab>=4.0.0",
+    "hatchling>=1.5.0",
+    "hatch-nodejs-version>=0.3.2",
+    "jupyter-builder>=1.0.0",
+    "tbump"
+]
 docs = [
     "jupyter_sphinx",
     "nbsphinx",

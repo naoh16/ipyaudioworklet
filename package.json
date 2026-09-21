@@ -31,8 +31,8 @@
   "scripts": {
     "build": "yarn run build:lib && yarn run build:nbextension && yarn run build:labextension:dev && yarn run build:postprocess",
     "build:prod": "yarn run build:lib && yarn run build:nbextension && yarn run build:labextension && yarn run build:postprocess",
-    "build:labextension": "jupyter labextension build .",
-    "build:labextension:dev": "jupyter labextension build --development True .",
+    "build:labextension": "jupyter-builder build .",
+    "build:labextension:dev": "jupyter-builder build --development True .",
     "build:lib": "tsc",
     "build:nbextension": "webpack",
     "build:postprocess": "node build-post-process.js",
@@ -47,7 +47,7 @@
     "watch": "npm-run-all -p watch:*",
     "watch:lib": "tsc -w",
     "watch:nbextension": "webpack --watch --mode=development",
-    "watch:labextension": "jupyter labextension watch ."
+    "watch:labextension": "jupyter-builder watch ."
   },
   "dependencies": {
     "@jupyter-widgets/base": "^1.1.10 || ^2 || ^3 || ^4 || ^5 || ^6",
@@ -58,7 +58,7 @@
     "@babel/core": "^7.5.0",
     "@babel/preset-env": "^7.5.0",
     "@jupyter-widgets/base-manager": "^1.0.2",
-    "@jupyterlab/builder": ">=3.0.0",
+    "@jupyter/builder": "^1.0.0",
     "@lumino/application": "^1.6.0",
     "@lumino/widgets": "^1.6.0",
     "@types/audioworklet": "^0.0.50",
