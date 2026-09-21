@@ -8,6 +8,9 @@
 ipyaudioworklet.AudioRecorder
 """
 
+import sys
+import time
+
 from ipywidgets import DOMWidget
 from traitlets import Unicode, List, Int
 from traittypes import Array
@@ -41,14 +44,51 @@ class AudioRecorder(DOMWidget):
     # see also src/widgets.ts#AudioRecorderView.on_msg()
     ####################################################
 
+    def __init__(self, **kwargs):
+        # sys.stderr.write("AudioRecorder: __init__()")
+        self.observe(self._on_status_change, names='status')
+
+        super().__init__(**kwargs)
+
     def run(self):
+        # sys.stderr.write("AudioRecorder: run()")
+        if self.status != 'NOT_INITIALIZED':
+            sys.stderr.write(f"AudioRecorder: {self.status}: run() is ignored")
+            return
+
         self.send({'cmd': 'run', 'args': []})
 
     def resume(self):
-        self.send({'cmd': 'resume', 'args': []})
+        # sys.stderr.write(f"AudioRecorder: {self.status}: resume()")
+        if self.status == 'READY' or self.status == 'RECORDED':
+            self.send({'cmd': 'resume', 'args': []})
+        else:
+            sys.stderr.write(f"AudioRecorder: {self.status}: resume() is ignored")
 
     def suspend(self):
-        self.send({'cmd': 'suspend', 'args': []})
+        # sys.stderr.write(f"AudioRecorder: {self.status}: suspend()")
+        if self.status == 'RECORDING':
+            self.send({'cmd': 'suspend', 'args': [False]})
+            time.sleep(0.1)  # message pump for Typescript
+        else:
+            sys.stderr.write(f"AudioRecorder: {self.status}: suspend() is ignored")
 
     def use_audiochunk(self, use_flag=True):
+        # print(f"AudioRecorder: use_audiochunk({use_flag})")
         self.send({'cmd': 'use_audiochunk', 'args': [use_flag]})
+
+    def _on_status_change(self, change):
+        sys.stderr.write("AudioRecorder: _on_status_change, status = {}\n".format(change['new']))
+        match change['new']:
+            case 'NOT_INITIALIZED': # It wolud not be called...
+                pass
+            case 'INITIALIZING':    # run message
+                pass
+            case 'READY':           # run message
+                pass
+            case 'RECORDING':       # resume message
+                pass
+            case 'RECORDED':        # suspend message
+                pass
+            case _:
+                pass

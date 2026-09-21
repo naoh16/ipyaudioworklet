@@ -150,6 +150,8 @@ By default it will also create a tag.
 ```bash
 pip install tbump
 tbump <new-version>
+# or
+# tbump <new-version> --no-push
 ```
 
 ## Build sdist and wheel

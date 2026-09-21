@@ -2,6 +2,7 @@
 requires = [
     "jupyterlab>=4.0.0",
     "hatchling>=1.5.0",
+    "hatch-jupyter-builder>=0.5.0",
     "hatch-nodejs-version>=0.3.2",
     "jupyter-builder>=1.0.0"
 ]

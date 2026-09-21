@@ -57,7 +57,7 @@ export class AudioRecorderView extends DOMWidgetView {
   private _bootButton: HTMLButtonElement;
   private _resumeButton: HTMLButtonElement;
   private _suspendButton: HTMLButtonElement;
-  private _useAudiochunk: Boolean = false;
+  private _useAudiochunk: Boolean = true;
   render(): any {
     this.el.classList.add('jupyter-widgets');
 
@@ -109,7 +109,7 @@ export class AudioRecorderView extends DOMWidgetView {
     // JavaScipt --> Python update
     this._bootButton.onclick = this._onClickBootButton.bind(this);
     this._resumeButton.onclick = this._onClickResumeButton.bind(this);
-    this._suspendButton.onclick = this._onClickSuspendButton.bind(this);
+    this._suspendButton.onclick = this._onClickSuspendButton.bind(this, true);
   }
 
   private value_changed(): void {
@@ -125,7 +125,7 @@ export class AudioRecorderView extends DOMWidgetView {
         this._onClickResumeButton();
         break;
       case 'suspend':
-        this._onClickSuspendButton();
+        this._onClickSuspendButton(command.args[0]);
         break;
       case 'use_audiochunk':
         this._useAudiochunk = command.args[0];
@@ -154,8 +154,9 @@ export class AudioRecorderView extends DOMWidgetView {
     });
   }
   private _onClickResumeButton() {
+    let p = undefined;
     if(this._useAudiochunk) {
-      a.resume((datachunk: any) => {
+      p = a.resume((pos: number, datachunk: any) => {
         this.model.set('audiochunk', {
           array: new Float32Array(datachunk),
           shape: [datachunk.length]
@@ -163,30 +164,34 @@ export class AudioRecorderView extends DOMWidgetView {
         this.model.save_changes();
       });
     } else {
-        a.resume(undefined);
+      p = a.resume(undefined);
     }
-    this.model.set('value', this._message.textContent + ' [RESUME]');
-    this.model.set('status', 'RECORDING');
-    this.model.save_changes();
 
-    this._resumeButton.disabled = true;
-    this._suspendButton.disabled = false;
-  }
-  private _onClickSuspendButton() {
-    a.suspend();
-    // console.log(a.audiodata);
-    this.model.set('audiodata', {
-      array: new Float32Array(a.audiodata),
-      shape: [a.audiodata.length]
+    p.then(() => {
+      this.model.set('value', this._message.textContent + ' [RESUME]');
+      this.model.set('status', 'RECORDING');
+      this.model.save_changes();
+
+      this._resumeButton.disabled = true;
+      this._suspendButton.disabled = false;
     });
-    this.model.set('blob_url', a.blob_url);
-    this.model.set('value', this._message.textContent + ' [SUSPEND]');
-    this.model.set('status', 'RECORDED');
-    this.model.save_changes();
+  }
+  private _onClickSuspendButton(called_from_ui: boolean) {
+    a.suspend().then(() => {
+      console.log(a.audiodata);
+      this.model.set('audiodata', {
+        array: new Float32Array(a.audiodata),
+        shape: [a.audiodata.length]
+      });
+      this.model.set('blob_url', a.blob_url);
+      this.model.set('value', this._message.textContent + ' [SUSPEND]');
+      this.model.set('status', 'RECORDED');
+      this.model.save_changes();
 
-    this._audioControl.src = a.blob_url;
-    this._audioControl.title = this.model.get('filename');
-    this._resumeButton.disabled = false;
-    this._suspendButton.disabled = true;
+      this._audioControl.src = a.blob_url;
+      this._audioControl.title = this.model.get('filename');
+      this._resumeButton.disabled = false;
+      this._suspendButton.disabled = true;
+    });
   }
 }

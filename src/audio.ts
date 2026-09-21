@@ -1,8 +1,27 @@
-class DataViewEx extends DataView {
+class DataViewEx {
+  private view: DataView;
+  constructor(buffer: ArrayBufferLike, byteOffset?: number, byteLength?: number) {
+    this.view = new DataView(buffer, byteOffset, byteLength);
+  }
   setFourCC(offset: number, cc: string) {
     for (let i = 0; i < 4; i++) {
       this.setUint8(offset + i, cc.charCodeAt(i));
     }
+  }
+  setUint8(byteOffset: number, value: number): void {
+    this.view.setUint8(byteOffset, value);
+  }
+  setUint16(byteOffset: number, value: number, littleEndian?: boolean): void {
+    this.view.setUint16(byteOffset, value, littleEndian);
+  }
+  setUint32(byteOffset: number, value: number, littleEndian?: boolean): void {
+    this.view.setUint32(byteOffset, value, littleEndian);
+  }
+  setInt16(byteOffset: number, value: number, littleEndian?: boolean): void {
+    this.view.setInt16(byteOffset, value, littleEndian);
+  }
+  get dataView(): DataView {
+    return this.view;
   }
 }
 
@@ -86,7 +105,7 @@ function encodeAudioAsWavfile(audiodata: any[], settings: MediaTrackSettings) {
       ', [sample]'
   );
 
-  return new Blob([dv], { type: 'audio/wav' });
+  return new Blob([dv.dataView], { type: 'audio/wav' });
 }
 
 const procdef_str = `class AudioRecorderProcessor extends AudioWorkletProcessor
@@ -221,44 +240,100 @@ export function getSampleRate(): number | undefined {
   return mediaConfig.sampleRate || audioContext.sampleRate;
 }
 
-export function resume(cb_func: any): void {
-  buffers = [];
-  audioRecorderNode.port.onmessage = (e: any) => {
-    buffers.push(e.data);
-    if(cb_func) cb_func(e.data);
-  };
-  audioContext.resume();
-  audioRecorderNode.parameters
-    .get('isRecording')
-    .setValueAtTime(1, audioContext.currentTime);
-  console.log('recording');
-}
+type AudioChunkCallback = (pos: number, data: number[]) => void;
 
-export function suspend(): void {
-  audioContext.suspend();
-  audioRecorderNode.parameters
-    .get('isRecording')
-    .setValueAtTime(0, audioContext.currentTime);
-  console.log('suspended');
-
-  const dataLengthSample = buffers.reduce((a, v) => a + v.length, 0);
-  audiodata = new Array(dataLengthSample);
-
+function sliceAsAudioChunk(
+  cb_func: AudioChunkCallback | undefined, pos: number, q_blocks: any[],
+) {
+  const dataLengthSample = q_blocks.reduce((a, v) => a + v.length, 0);
+  let tmp_audiodata = new Array(dataLengthSample);
   let offset = 0;
-  for (const buffer of buffers) {
+  for (const buffer of q_blocks) {
     for (const value of buffer) {
-      audiodata[offset++] = value;
+      tmp_audiodata[offset++] = value;
     }
   }
+  if(cb_func) cb_func(pos, tmp_audiodata);
+}  
+let chunk_top = 0;
+const chunk_num = 16; // each buffer has probably have 128 [sample], therefore 16 [block] ~= 2048 [sample]
+let g_cb_func: AudioChunkCallback | undefined = undefined;
+export async function resume(cb_func?: AudioChunkCallback): Promise<void> {
+  console.log('resume(): called.');
 
-  const blob = encodeAudioAsWavfile(audiodata, mediaConfig);
-  console.log(blob);
-  blob_url = URL.createObjectURL(blob);
-  //       var reader = new FileReader();
-  //       reader.readAsDataURL(blob);
-  //       reader.onloadend = function() {
-  //         var base64data = reader.result;
-  //         const uiLog = document.querySelector('div#log');
-  //         uiLog.innerHTML += '<div style="width:100%; overflow-wrap: anywhere;"><code>' + base64data + '</code></div>';
-  //       }
+  // Inittialize
+  buffers = [];
+  chunk_top = 0;
+  g_cb_func = cb_func;
+
+  // Prepare callback function for audio processing
+  audioRecorderNode.port.onmessage = (e: any) => {
+    // Process for making audiodata parameter
+    // console.log('recording: ' + buffers.length + ': ' + audioContext.currentTime);
+    buffers.push(e.data);
+
+    // Process for audiochunk callback function
+    //   To prevent neglect call of the callback function,
+    //   we need to control the frequency of the callback function.
+    if (g_cb_func && (buffers.length >= chunk_top + chunk_num)) {
+      new Promise((resolv: (value: [number, number]) => void) => {
+        resolv([chunk_top, chunk_top + chunk_num]);
+      }).then(value => {
+        sliceAsAudioChunk(g_cb_func, value[0], buffers.slice(value[0], value[1]));
+      });
+      chunk_top += chunk_num;
+    }
+  };
+
+  // Start recording
+  await audioContext.resume().then(() => {
+    audioRecorderNode.parameters
+      .get('isRecording')
+      .setValueAtTime(1, audioContext.currentTime);
+    // console.log('resume(): at ' + audioContext.currentTime);
+    // console.log('resume(): finished.');
+  });
+}
+
+export async function suspend(): Promise<void> {
+  // console.log('suspend(): called.');
+  await audioContext.suspend().then(() => {;
+    audioRecorderNode.parameters
+      .get('isRecording')
+      .setValueAtTime(0, audioContext.currentTime);
+    // console.log('suspended: at ' + audioContext.currentTime);
+
+    // Process for audiochunk callback function
+    if (g_cb_func && (chunk_top < buffers.length)) {
+      new Promise((resolv: (value: [number, number]) => void) => {
+        resolv([chunk_top, buffers.length]);
+      }).then(value => {
+        sliceAsAudioChunk(g_cb_func, value[0], buffers.slice(value[0], value[1]));
+      });
+      chunk_top = buffers.length;
+    }
+
+    // Process for the final audio data
+    const dataLengthSample = buffers.reduce((a, v) => a + v.length, 0);
+    audiodata = new Array(dataLengthSample);
+
+    let offset = 0;
+    for (const buffer of buffers) {
+      for (const value of buffer) {
+        audiodata[offset++] = value;
+      }
+    }
+
+    const blob = encodeAudioAsWavfile(audiodata, mediaConfig);
+    console.log(blob);
+    blob_url = URL.createObjectURL(blob);
+    //       var reader = new FileReader();
+    //       reader.readAsDataURL(blob);
+    //       reader.onloadend = function() {
+    //         var base64data = reader.result;
+    //         const uiLog = document.querySelector('div#log');
+    //         uiLog.innerHTML += '<div style="width:100%; overflow-wrap: anywhere;"><code>' + base64data + '</code></div>';
+    //       }
+    console.log('suspend(): finished.');
+  });
 }
