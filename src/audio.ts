@@ -1,6 +1,10 @@
 class DataViewEx {
   private view: DataView;
-  constructor(buffer: ArrayBufferLike, byteOffset?: number, byteLength?: number) {
+  constructor(
+    buffer: ArrayBufferLike,
+    byteOffset?: number,
+    byteLength?: number
+  ) {
     this.view = new DataView(buffer, byteOffset, byteLength);
   }
   setFourCC(offset: number, cc: string) {
@@ -35,6 +39,7 @@ function encodeAudioAsWavfile(audiodata: any[], settings: MediaTrackSettings) {
     );
   }
   //console.assert(settings.channelCount == 1, "#Channel should be one (monoral).", settings);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore: TS2339
   if (settings.channelCount !== 1) {
     console.log(
@@ -208,9 +213,7 @@ let buffers: any[] = [];
 export let audiodata: any[]; //new Float32Array(_audiodata);
 export let blob_url = '';
 
-export async function run(
-  annealing_time_ms = 500
-): Promise<void> {
+export async function run(annealing_time_ms = 500): Promise<void> {
   console.log('(1)');
   const blob = new Blob([procdef_str], { type: 'application/javascript' });
   await prepareCustomAudioProcessor(
@@ -243,18 +246,23 @@ export function getSampleRate(): number | undefined {
 type AudioChunkCallback = (pos: number, data: number[]) => void;
 
 function sliceAsAudioChunk(
-  cb_func: AudioChunkCallback | undefined, pos: number, q_blocks: any[],
+  cb_func: AudioChunkCallback | undefined,
+  pos: number,
+  q_blocks: any[]
 ) {
   const dataLengthSample = q_blocks.reduce((a, v) => a + v.length, 0);
-  let tmp_audiodata = new Array(dataLengthSample);
+  const tmp_audiodata = new Array(dataLengthSample);
   let offset = 0;
   for (const buffer of q_blocks) {
     for (const value of buffer) {
       tmp_audiodata[offset++] = value;
     }
   }
-  if(cb_func) cb_func(pos, tmp_audiodata);
-}  
+  if (cb_func) {
+    cb_func(pos, tmp_audiodata);
+  }
+}
+
 let chunk_top = 0;
 const chunk_num = 16; // each buffer has probably have 128 [sample], therefore 16 [block] ~= 2048 [sample]
 let g_cb_func: AudioChunkCallback | undefined = undefined;
@@ -275,11 +283,15 @@ export async function resume(cb_func?: AudioChunkCallback): Promise<void> {
     // Process for audiochunk callback function
     //   To prevent neglect call of the callback function,
     //   we need to control the frequency of the callback function.
-    if (g_cb_func && (buffers.length >= chunk_top + chunk_num)) {
+    if (g_cb_func && buffers.length >= chunk_top + chunk_num) {
       new Promise((resolv: (value: [number, number]) => void) => {
         resolv([chunk_top, chunk_top + chunk_num]);
-      }).then(value => {
-        sliceAsAudioChunk(g_cb_func, value[0], buffers.slice(value[0], value[1]));
+      }).then((value) => {
+        sliceAsAudioChunk(
+          g_cb_func,
+          value[0],
+          buffers.slice(value[0], value[1])
+        );
       });
       chunk_top += chunk_num;
     }
@@ -297,18 +309,22 @@ export async function resume(cb_func?: AudioChunkCallback): Promise<void> {
 
 export async function suspend(): Promise<void> {
   // console.log('suspend(): called.');
-  await audioContext.suspend().then(() => {;
+  await audioContext.suspend().then(() => {
     audioRecorderNode.parameters
       .get('isRecording')
       .setValueAtTime(0, audioContext.currentTime);
     // console.log('suspended: at ' + audioContext.currentTime);
 
     // Process for audiochunk callback function
-    if (g_cb_func && (chunk_top < buffers.length)) {
+    if (g_cb_func && chunk_top < buffers.length) {
       new Promise((resolv: (value: [number, number]) => void) => {
         resolv([chunk_top, buffers.length]);
-      }).then(value => {
-        sliceAsAudioChunk(g_cb_func, value[0], buffers.slice(value[0], value[1]));
+      }).then((value) => {
+        sliceAsAudioChunk(
+          g_cb_func,
+          value[0],
+          buffers.slice(value[0], value[1])
+        );
       });
       chunk_top = buffers.length;
     }

@@ -6,9 +6,8 @@ import {
   DOMWidgetView,
   ISerializers,
 } from '@jupyter-widgets/base';
-import {
-  simplearray_serialization,
-} from "jupyter-dataserializers"
+
+import { simplearray_serialization } from 'jupyter-dataserializers';
 
 import { MODULE_NAME, MODULE_VERSION } from './version';
 
@@ -33,7 +32,7 @@ export class AudioRecorderModel extends DOMWidgetModel {
       audiochunk: new Float32Array(0),
       blob_url: '',
       filename: 'default.wav',
-      status: 'NOT_INITIALIZED'
+      status: 'NOT_INITIALIZED',
     };
   }
 
@@ -57,7 +56,7 @@ export class AudioRecorderView extends DOMWidgetView {
   private _bootButton: HTMLButtonElement;
   private _resumeButton: HTMLButtonElement;
   private _suspendButton: HTMLButtonElement;
-  private _useAudiochunk: Boolean = true;
+  private _useAudiochunk = true;
   render(): any {
     this.el.classList.add('jupyter-widgets');
 
@@ -138,7 +137,7 @@ export class AudioRecorderView extends DOMWidgetView {
     this.model.set('status', 'INITIALIZING');
     this.model.save_changes();
     a.run().then((r) => {
-        const _sampleRate = a.getSampleRate() || -1;
+      const _sampleRate = a.getSampleRate() || -1;
       this.model.set(
         'value',
         'AudioRecorder is ready (Sampling rate: ' +
@@ -155,11 +154,11 @@ export class AudioRecorderView extends DOMWidgetView {
   }
   private _onClickResumeButton() {
     let p = undefined;
-    if(this._useAudiochunk) {
+    if (this._useAudiochunk) {
       p = a.resume((pos: number, datachunk: any) => {
         this.model.set('audiochunk', {
           array: new Float32Array(datachunk),
-          shape: [datachunk.length]
+          shape: [datachunk.length],
         });
         this.model.save_changes();
       });
@@ -181,7 +180,7 @@ export class AudioRecorderView extends DOMWidgetView {
       console.log(a.audiodata);
       this.model.set('audiodata', {
         array: new Float32Array(a.audiodata),
-        shape: [a.audiodata.length]
+        shape: [a.audiodata.length],
       });
       this.model.set('blob_url', a.blob_url);
       this.model.set('value', this._message.textContent + ' [SUSPEND]');

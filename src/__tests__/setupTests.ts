@@ -3,5 +3,4 @@ class FakeDragEvent extends Event {
     super(type, eventInitDict);
   }
 }
-
 (globalThis as any).DragEvent = FakeDragEvent;
