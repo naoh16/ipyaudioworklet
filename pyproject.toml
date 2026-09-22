@@ -62,7 +62,7 @@ docs = [
     "pypandoc",
     "pytest_check_links",
     "recommonmark",
-    "sphinx>=1.5",
+    "sphinx>=8,<9",
     "sphinx_rtd_theme",
 ]
 examples = [
