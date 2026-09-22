@@ -45,7 +45,7 @@ dependencies = [
     "traittypes",
     "numpy"
 ]
-version = "0.6.0"
+version = "0.7.0"
 
 [project.optional-dependencies]
 dev = [
@@ -137,7 +137,7 @@ src = "binder/environment.yml"
 search = "ipyaudioworklet=="
 
 [tool.tbump.version]
-current = "0.6.0"
+current = "0.7.0"
 regex = '''
 (?P<major>\d+)
 \.
